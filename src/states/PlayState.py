@@ -95,6 +95,33 @@ class PlayState(BaseState):
                     )
                 )
 
+            #Chance to attached balls
+            if random.random() < 0.1:
+                r = brick.get_collision_rect()
+                self.powerups.append(
+                    self.powerups_abstract_factory.get_factory("AttachedBall").create(
+                        r.centerx - 8, r.centery - 8
+                    )
+                )
+
+            #Chance to cannons pair
+            if random.random() < 0.1:
+                r = brick.get_collision_rect()
+                self.powerups.append(
+                    self.powerups_abstract_factory.get_factory("CannonsPair").create(
+                        r.centerx - 8, r.centery - 8
+                    )
+                )
+
+            #Chance to cannons pair
+            if random.random() < 0.1:
+                r = brick.get_collision_rect()
+                self.powerups.append(
+                    self.powerups_abstract_factory.get_factory("BottomShield").create(
+                        r.centerx - 8, r.centery - 8
+                    )
+                )
+
         # Removing all balls that are not in play
         self.balls = [ball for ball in self.balls if ball.active]
 

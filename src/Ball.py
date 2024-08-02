@@ -31,6 +31,8 @@ class Ball:
         self.frame = random.randint(0, 6)
         self.active = True
 
+        self.attachedBall = False # true attached, false no attached
+
     def get_collision_rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
