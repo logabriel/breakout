@@ -36,6 +36,7 @@ class PlayState(BaseState):
             + settings.PADDLE_GROW_UP_POINTS * (self.paddle.size + 1) * self.level
         )
         self.powerups = params.get("powerups", [])
+        self.timerAttachedBall = params.get("timerAttachedBall", 0)
 
         if not params.get("resume", False):
             self.balls[0].vx = random.randint(-80, 80)
@@ -43,6 +44,7 @@ class PlayState(BaseState):
             settings.SOUNDS["paddle_hit"].play()
 
         self.powerups_abstract_factory = AbstractFactory("src.powerups")
+
 
     def update(self, dt: float) -> None:
         self.paddle.update(dt)
@@ -52,11 +54,27 @@ class PlayState(BaseState):
             ball.solve_world_boundaries()
 
             # Check collision with the paddle
-            if ball.collides(self.paddle):
+            if ball.collides(self.paddle) and not ball.sticky:
                 settings.SOUNDS["paddle_hit"].stop()
                 settings.SOUNDS["paddle_hit"].play()
                 ball.rebound(self.paddle)
                 ball.push(self.paddle)
+            elif ball.collides(self.paddle) and ball.sticky:
+                settings.SOUNDS["paddle_hit"].stop()
+                settings.SOUNDS["paddle_hit"].play()
+                ball.attachedInPaddle(self.paddle)
+
+            #check attached ball with paddle
+            if ball.attachedBall:
+                ball.setPositionBall(self.paddle)
+
+            if ball.sticky:
+                self.timerAttachedBall += dt
+
+            if self.timerAttachedBall >= 8:
+                for ball in self.balls:
+                    ball.sticky = False
+                    self.timerAttachedBall = 0
 
             # Check collision with brickset
             if not ball.collides(self.brickset):
@@ -85,7 +103,7 @@ class PlayState(BaseState):
                     settings.PADDLE_GROW_UP_POINTS * (self.paddle.size + 1) * self.level
                 )
                 self.paddle.inc_size()
-
+            
             # Chance to generate two more balls
             if random.random() < 0.1:
                 r = brick.get_collision_rect()
@@ -94,7 +112,7 @@ class PlayState(BaseState):
                         r.centerx - 8, r.centery - 8
                     )
                 )
-
+            
             #Chance to attached balls
             if random.random() < 0.1:
                 r = brick.get_collision_rect()
@@ -103,7 +121,7 @@ class PlayState(BaseState):
                         r.centerx - 8, r.centery - 8
                     )
                 )
-
+            """
             #Chance to cannons pair
             if random.random() < 0.1:
                 r = brick.get_collision_rect()
@@ -121,6 +139,7 @@ class PlayState(BaseState):
                         r.centerx - 8, r.centery - 8
                     )
                 )
+            """
 
         # Removing all balls that are not in play
         self.balls = [ball for ball in self.balls if ball.active]
@@ -219,6 +238,22 @@ class PlayState(BaseState):
                 self.paddle.vx = settings.PADDLE_SPEED
             elif input_data.released and self.paddle.vx > 0:
                 self.paddle.vx = 0
+        elif input_id == "push":
+            if input_data.pressed:
+                for ball in self.balls:
+                    if ball.attachedBall:
+                        if self.paddle.vx > 0:
+                            ball.vx = random.randint(50, 80)
+                            ball.vy = random.randint(-170, -100)
+                            ball.attachedBall = False
+                        elif self.paddle.vx < 0:
+                            ball.vx = random.randint(-80, -50)
+                            ball.vy = random.randint(-170, -100)
+                            ball.attachedBall = False
+                        else:
+                            ball.vx = 0
+                            ball.vy = random.randint(-170, -100)
+                            ball.attachedBall = False
         elif input_id == "pause" and input_data.pressed:
             self.state_machine.change(
                 "pause",
@@ -231,4 +266,5 @@ class PlayState(BaseState):
                 points_to_next_live=self.points_to_next_live,
                 live_factor=self.live_factor,
                 powerups=self.powerups,
+                timerAttachedBall=self.timerAttachedBall,
             )

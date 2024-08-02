@@ -23,10 +23,8 @@ class AttachedBall(PowerUp):
         super().__init__(x, y, 4) 
 
     def take(self, play_state: TypeVar("PlayState")) -> None:
-        #paddle = play_state.paddle
-        balls = play_state.balls
-
-        for ball in balls:
-            ball.attachedBall = True
+        play_state.timerAttachedBall = 0
+        for ball in play_state.balls:
+            ball.sticky = True
 
         self.active = False

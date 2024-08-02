@@ -19,6 +19,7 @@ class PauseState(BaseState):
         self.points_to_next_live = params["points_to_next_live"]
         self.powerups = params["powerups"]
         settings.SOUNDS["pause"].play()
+        self.timerAttachedBall = params["timerAttachedBall"]
 
     def render(self, surface: pygame.Surface) -> None:
         heart_x = settings.VIRTUAL_WIDTH - 120
@@ -75,5 +76,6 @@ class PauseState(BaseState):
                 points_to_next_live=self.points_to_next_live,
                 live_factor=self.live_factor,
                 powerups=self.powerups,
+                timerAttachedBall=self.timerAttachedBall,
                 resume=True,
             )
