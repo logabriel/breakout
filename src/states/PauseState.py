@@ -20,6 +20,7 @@ class PauseState(BaseState):
         self.powerups = params["powerups"]
         settings.SOUNDS["pause"].play()
         self.timerAttachedBall = params["timerAttachedBall"]
+        self.timerBottomShield = params["timerBottomShield"]
 
     def render(self, surface: pygame.Surface) -> None:
         heart_x = settings.VIRTUAL_WIDTH - 120
@@ -77,5 +78,6 @@ class PauseState(BaseState):
                 live_factor=self.live_factor,
                 powerups=self.powerups,
                 timerAttachedBall=self.timerAttachedBall,
+                timerBottomShield=self.timerBottomShield,
                 resume=True,
             )

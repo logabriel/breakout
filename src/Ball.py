@@ -35,6 +35,8 @@ class Ball:
         self.attachedBall = False # true adherido, false no adherido
         self.diferencia = 0
 
+        self.bandBottomShield = False
+
     def get_collision_rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
@@ -57,8 +59,14 @@ class Ball:
             self.y = 0
             self.vy *= -1
         elif r.top > settings.VIRTUAL_HEIGHT:
-            settings.SOUNDS["hurt"].play()
-            self.active = False
+            if not self.bandBottomShield:
+                settings.SOUNDS["hurt"].play()
+                self.active = False
+            else:
+                settings.SOUNDS["wall_hit"].stop()
+                settings.SOUNDS["wall_hit"].play()
+                self.y = settings.VIRTUAL_HEIGHT - self.height
+                self.vy *= -1        
 
     def collides(self, another: Any) -> bool:
         return self.get_collision_rect().colliderect(another.get_collision_rect())

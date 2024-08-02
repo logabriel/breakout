@@ -37,6 +37,7 @@ class PlayState(BaseState):
         )
         self.powerups = params.get("powerups", [])
         self.timerAttachedBall = params.get("timerAttachedBall", 0)
+        self.timerBottomShield = params.get("timerBottomShield", 0)
 
         if not params.get("resume", False):
             self.balls[0].vx = random.randint(-80, 80)
@@ -44,7 +45,6 @@ class PlayState(BaseState):
             settings.SOUNDS["paddle_hit"].play()
 
         self.powerups_abstract_factory = AbstractFactory("src.powerups")
-
 
     def update(self, dt: float) -> None:
         self.paddle.update(dt)
@@ -68,13 +68,23 @@ class PlayState(BaseState):
             if ball.attachedBall:
                 ball.setPositionBall(self.paddle)
 
+            #timers PowerUp Attached
             if ball.sticky:
                 self.timerAttachedBall += dt
 
-            if self.timerAttachedBall >= 8:
+            if self.timerAttachedBall >= 7:
+                self.timerAttachedBall = 0
                 for ball in self.balls:
                     ball.sticky = False
-                    self.timerAttachedBall = 0
+
+            #timers PowerUp BottomShield
+            if ball.bandBottomShield:
+                self.timerBottomShield += dt
+
+            if self.timerBottomShield >= 5:
+                self.timerBottomShield = 0
+                for ball in self.balls:
+                    ball.bandBottomShield = False
 
             # Check collision with brickset
             if not ball.collides(self.brickset):
@@ -103,7 +113,7 @@ class PlayState(BaseState):
                     settings.PADDLE_GROW_UP_POINTS * (self.paddle.size + 1) * self.level
                 )
                 self.paddle.inc_size()
-            
+
             # Chance to generate two more balls
             if random.random() < 0.1:
                 r = brick.get_collision_rect()
@@ -112,7 +122,7 @@ class PlayState(BaseState):
                         r.centerx - 8, r.centery - 8
                     )
                 )
-            
+
             #Chance to attached balls
             if random.random() < 0.1:
                 r = brick.get_collision_rect()
@@ -121,6 +131,7 @@ class PlayState(BaseState):
                         r.centerx - 8, r.centery - 8
                     )
                 )
+
             """
             #Chance to cannons pair
             if random.random() < 0.1:
@@ -130,8 +141,9 @@ class PlayState(BaseState):
                         r.centerx - 8, r.centery - 8
                     )
                 )
+            """
 
-            #Chance to cannons pair
+            #Chance to BottonmShield
             if random.random() < 0.1:
                 r = brick.get_collision_rect()
                 self.powerups.append(
@@ -139,7 +151,6 @@ class PlayState(BaseState):
                         r.centerx - 8, r.centery - 8
                     )
                 )
-            """
 
         # Removing all balls that are not in play
         self.balls = [ball for ball in self.balls if ball.active]
@@ -267,4 +278,5 @@ class PlayState(BaseState):
                 live_factor=self.live_factor,
                 powerups=self.powerups,
                 timerAttachedBall=self.timerAttachedBall,
+                timerBottomShield=self.timerBottomShield,
             )

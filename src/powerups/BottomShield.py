@@ -21,9 +21,10 @@ class BottomShield(PowerUp):
 
     def __init__(self, x: int, y: int) -> None:
         super().__init__(x, y, 0)
-        #TODO 
 
     def take(self, play_state: TypeVar("PlayState")) -> None:
-        #TODO
+        play_state.timerBottomShield = 0
+        for ball in play_state.balls:
+            ball.bandBottomShield = True
 
         self.active = False
