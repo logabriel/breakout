@@ -11,6 +11,7 @@ This file contains the class Paddle.
 import pygame
 
 import settings
+from src.Cannon import Cannon
 
 
 class Paddle:
@@ -19,6 +20,12 @@ class Paddle:
         self.y = y
         self.width = 64
         self.height = 16
+        self.cannonLeft = Cannon(
+            self.x - 12, settings.VIRTUAL_HEIGHT - 32 - 6 , 1
+        )
+        self.cannonRight = Cannon(
+            self.x + self.width, settings.VIRTUAL_HEIGHT - 32 - 6, 0
+        )
 
         # By default, the blue paddle
         self.skin = 0
@@ -42,6 +49,12 @@ class Paddle:
     def inc_size(self):
         self.resize(min(3, self.size + 1))
 
+    def activeCannons(self):
+        if self.cannonLeft.active:
+            self.cannonLeft.active = False
+        else:
+            self.cannonLeft.active = True
+
     def get_collision_rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
@@ -53,5 +66,10 @@ class Paddle:
         else:
             self.x = min(settings.VIRTUAL_WIDTH - self.width, next_x)
 
+        self.cannonLeft.update(dt, self.x - self.cannonRight.width)
+        self.cannonRight.update(dt, self.x + self.width)
+
     def render(self, surface: pygame.Surface) -> None:
         surface.blit(self.texture, (self.x, self.y), self.frames[self.skin][self.size])
+        self.cannonLeft.render(surface)
+        self.cannonRight.render(surface)

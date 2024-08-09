@@ -115,7 +115,7 @@ class PlayState(BaseState):
                 self.paddle.inc_size()
 
             # Chance to generate two more balls
-            if random.random() < 0.1:
+            if random.random() < 0.13:
                 r = brick.get_collision_rect()
                 self.powerups.append(
                     self.powerups_abstract_factory.get_factory("TwoMoreBall").create(
@@ -124,7 +124,7 @@ class PlayState(BaseState):
                 )
 
             #Chance to attached balls
-            if random.random() < 0.1:
+            if random.random() < 0.14:
                 r = brick.get_collision_rect()
                 self.powerups.append(
                     self.powerups_abstract_factory.get_factory("AttachedBall").create(
@@ -144,7 +144,7 @@ class PlayState(BaseState):
             """
 
             #Chance to BottonmShield
-            if random.random() < 0.1:
+            if random.random() < 0.12:
                 r = brick.get_collision_rect()
                 self.powerups.append(
                     self.powerups_abstract_factory.get_factory("BottomShield").create(
