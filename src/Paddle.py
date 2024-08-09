@@ -52,8 +52,10 @@ class Paddle:
     def activeCannons(self):
         if self.cannonLeft.active:
             self.cannonLeft.active = False
+            self.cannonRight.active = False
         else:
             self.cannonLeft.active = True
+            self.cannonRight.active = True
 
     def get_collision_rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)

@@ -12,7 +12,7 @@ class Cannon:
         self.height = 24
 
         self.texture = settings.TEXTURES["cannons"]
-        self.active = True
+        self.active = False
         self.sideCannon = sideCanon #0 left, 1 right
 
     def update(self, dt: float, position: float) -> None:

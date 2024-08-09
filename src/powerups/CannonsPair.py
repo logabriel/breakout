@@ -21,9 +21,9 @@ class CannonsPair(PowerUp):
 
     def __init__(self, x: int, y: int) -> None:
         super().__init__(x, y, 6)
-        #TODO 
+        
 
     def take(self, play_state: TypeVar("PlayState")) -> None:
-        #TODO
+        play_state.paddle.activeCannons()
 
         self.active = False

@@ -132,7 +132,6 @@ class PlayState(BaseState):
                     )
                 )
 
-            """
             #Chance to cannons pair
             if random.random() < 0.1:
                 r = brick.get_collision_rect()
@@ -141,7 +140,6 @@ class PlayState(BaseState):
                         r.centerx - 8, r.centery - 8
                     )
                 )
-            """
 
             #Chance to BottonmShield
             if random.random() < 0.12:
